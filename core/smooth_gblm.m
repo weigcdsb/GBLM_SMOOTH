@@ -78,6 +78,11 @@ for k = 2:iter
     
     % 1. update beta0, wt_long_amp & wt_long_loc: adaptive smoothing
     W0 = eye(2)*0.1;
+    % W0 doesn't change iteration by iteration. Reseaons:
+    % after few iteration, W tend to super small, this might cause
+    % singularity and make convergence slow. Changing W0 will not influence
+    % too much of the estimations, since we are doing smoothing here.
+    
     F = eye(2);
     b0 = [beta0(1, k-1) wt_long(1, k-1)]';
     
