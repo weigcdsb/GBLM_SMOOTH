@@ -39,7 +39,7 @@ estParam.syn_params(1:2) = exp(estParam.syn_params(1:2));
 syn = @(ts) max(0,ts-estParam.syn_params(1))/estParam.syn_params(2).*exp(1-max(0,ts-estParam.syn_params(1))/estParam.syn_params(2));
 estParam.b1=b1;
 % basic window
-thr = hyper_params.thr;
-% hyper_params.tblock_min = min(t(abs(syn(t))>thr*abs(max(syn(t)))));
-hyper_params.tblock_min = 0;
-hyper_params.tblock_max = max(t(abs(syn(t))>thr*abs(max(syn(t)))));
+% thr = hyper_params.thr;
+% % hyper_params.tblock_min = min(t(abs(syn(t))>thr*abs(max(syn(t)))));
+% hyper_params.tblock_min = 0;
+% hyper_params.tblock_max = max(t(abs(syn(t))>thr*abs(max(syn(t)))));
