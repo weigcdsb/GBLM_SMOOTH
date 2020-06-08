@@ -15,8 +15,8 @@ data.pre_spk_vec = zeros(1,data.vecN);
 data.pre_spk_vec(round(data.pre_spk_times/data.dt))=1;
 
 % Synaptic Connection
-syn = @(ts) max(0,ts-sim.alpha_dt)/sim.alpha_tau.*exp(1-max(0,ts-sim.alpha_dt)/sim.alpha_tau);
-syn_kern = syn(linspace(0, 1, 1/data.dt));
+sim.syn = @(ts) max(0,ts-sim.alpha_dt)/sim.alpha_tau.*exp(1-max(0,ts-sim.alpha_dt)/sim.alpha_tau);
+syn_kern = sim.syn(linspace(0, 1, 1/data.dt));
 Xc = filter(syn_kern, 1, data.pre_spk_vec');
 
 % Short-Term Plasticity

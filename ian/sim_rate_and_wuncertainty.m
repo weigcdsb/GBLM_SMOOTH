@@ -15,8 +15,8 @@ sim.stp_Nm = 450;
 sim.stp_Ns = 50;
 sim.stp_tau= 1; % timeconstant for decay
 sim.stp_B = [-1 -2 -3 0 0]'*.0;
-sim.hist_tau = .1;
-sim.hist_beta = -1;
+sim.hist_tau = .01;
+sim.hist_beta = -5;
 
 sim.beta0 = ones(data.vecN,1)*2;
 % sim.beta0(round(data.vecN/3):round(data.vecN*2/3)) = -1;

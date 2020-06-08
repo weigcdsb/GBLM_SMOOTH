@@ -17,6 +17,12 @@ if (~isempty(varargin))
 end % if
 
 % initialization
+fit.wt_short_param = ones(fit.stp_Nq,1)*NaN;
+fit.W = zeros(2, 2, data.vecN);
+fit.llhd_pred=NaN;
+fit.dev=NaN;
+fit.covB = zeros(fit.stp_Nq)*NaN;
+
 tic
 offset = log(data.dt) + fit.hist*fit.hist_beta;
 alph = glmfit([fit.Xc],data.post_spk_vec,'poisson','Offset',offset);
@@ -26,18 +32,19 @@ fit.wt_short = ones(data.vecN, 1);
 % offset = fit.beta0 + log(data.dt) + fit.hist*fit.hist_beta;
 % W_short = repmat(fit.wt_long.*fit.Xc, 1, fit.stp_Nq).*fit.stp_X;
 % [alph,fit.dev] = glmfit([fit.Xc.*fit.wt_long W_short],data.post_spk_vec,'poisson','Offset',offset);
-% fit.wt_short_param = alph(3:end)/alph(2);
+% fit.wt_short_param = ones(fit.stp_Nq,1)*NaN;
 % fit.wt_short = 1 + fit.stp_X*fit.wt_short_param;
 % fit.beta0 = fit.beta0 + alph(1);
 % fit.wt_long = fit.wt_long*alph(2);
         
-fit.W = zeros(2, 2, data.vecN);
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc + fit.hist*fit.hist_beta)*data.dt;
 fit.llhd = sum(-lam + log((lam+(lam==0))).*(data.post_spk_vec'));
-fit.llhd_pred=NaN;
+
+dev_prev=fit.dev;
 fit_trace(1)=fit;
 c=2;
-dev_prev=fit.dev;
+
+
 for k = 1:iter
     fprintf('Iter %02i...',k)
     
@@ -126,7 +133,7 @@ else
     
     lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc + fit.hist*fit.hist_beta)*data.dt;
     fit.llhd = sum(-lam + log((lam+(lam==0))).*(data.post_spk_vec'));
-    fit.lam=lam;
+%     fit.lam=lam;
     fit_trace(c)=fit;
 end
 

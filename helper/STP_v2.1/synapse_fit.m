@@ -10,12 +10,6 @@ else
     bin_width = .00002;
 end
 
-t = linspace(-hyper_params.coupling_timescale,hyper_params.coupling_timescale,floor(hyper_params.coupling_timescale/bin_width));
-[ccgram,deltat] = corrFast(Tlist{1},Tlist{2},min(t),max(t),length(t));
-ccgram = ccgram(1:end-1);
-
-XX = getCubicBSplineBasis(linspace(0,1,length(t)-1),hyper_params.baseline_nsplines,0);
-
 % fit model
 options=[];
 options.method = 'cg';
@@ -37,7 +31,7 @@ for rr=1:100
 end
 
 options.MaxIter=2000;
-[b1,~] = minFunc(@lossGlmAlpha,b1,options,XX,ccgram,t(1:end-1)');
+[b1,~] = minFunc(@lossGlmAlphaConv,b1,options,XX,ccgram,t(1:end-1)',aagram);
 
 estParam.syn_params = b1(end-2:end);
 estParam.syn_params(1:2) = exp(estParam.syn_params(1:2));
