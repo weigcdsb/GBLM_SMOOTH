@@ -1,26 +1,47 @@
 # GBLM_SMOOTH
 GBLM-smoothing model for estimations of LTP and STP
 
-This repository contains 6 folders: helper, core, demo, absResQ, convergence and references
+## convergence
+check convergence when considering 1) random start points and 2) order of estimations
 
-## helper folder
-'helper' folder includes functions for alpha function and basis function
+## core
+This includes 3 subfolders:
 
-## core folder
-'core' folder includes functions for the core algorithm.
+ 1) diagnose: functions to help plot
 
-## demo folder
-Code in 'demo' folder is to show some examples for estimations. 
+ 2) modelFit: 2 main functions are called smooth_gblm.m and tune_smooth_gblm.m. tune_smooth_gblm is the Q-tuned version for smooth_gblm. 
 
-## absResQ folder
-Code in 'absResQ' folder is to analysis the relationship between absolute residuals for modification (ISI-dependent) function and Q for long-term effect estimations. 
- 
-## convergence folder
-Code in 'convergence' folder is to show the convergence of the algorithm, by 1) switching estimations of long-term effect (adaptive smoothing) and short-term effect (basis spline regression) and 2) setting random start.
+ 3) simulation: functions to help simulations, such as data generation, beta0 matching and wt_long matching.
 
-## references folder
-This folder contains some references
+## demo
+Show some examples of model fitting
 
-### chooseQ
-It contains 3 references: 2017-- adaptive adjustment for <img src="https://render.githubusercontent.com/render/math?math=Q_k">, i.e. Q is changing at each point; 2016-1 and 2016-2-- estimations for time-constant Q.
+## draft
+drafts for paper
+
+## fireRate
+Investigate influence of pre- and post-synaptic firing rate
+
+## helper
+
+## interaction
+Temporarily not included in the paper. Maybe we can investigate interactions by fixing 1 (true, under-estimate, over-estimate) of these 3, and then see the performance of the other 2?
+
+## LTPUncertainty
+See the influence of pre-synaptic firing rate on variance of wt_long
+
+## Qchoose
+A demo to show function tune_smooth_gblm
+
+## refereces
+
+## STP_type
+Investigate influence of different STP (depression vs. facilitation)
+
+## synType
+Investigate influence of different synapses (excitatory vs. inhibitory)
+
+
+
+
 
