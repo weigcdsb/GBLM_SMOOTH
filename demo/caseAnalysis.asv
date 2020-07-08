@@ -12,10 +12,23 @@ paramPlot(fit.beta0, squeeze(fit.W(1, 1, :)), sim.beta0,...
     fit.covB, fit.stp_X)
 
 modPlot(sim, fit)
-%% calculate lambda
-
+%% give the fitted post spike
+% data_fit.dt = data.dt;
+% fit.seed = sim.seed;
+% fit.pPreSpike = sim.pPreSpike;
+% fit.T = sim.T;
+% fit.vecN = sim.vecN;
+% fit.alpha_dt = fit.synParams.syn_params(1);
+% fit.alpha_tau = fit.synParams.syn_params(2);
+% fit.stp_B = fit.wt_short_param;
+% [data_fit,~] = sim_model(data_fit,fit);
+% 
 Tpre = data.pre_spk_times;
 Tpost = data.post_spk_times(:, 1);
+
+% Tpre_fit = data_fit.pre_spk_times;
+% Tpost_fit = data_fit.post_spk_times(:, 1);
+
 
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
     fit.hist*fit.hist_beta)*dt;
@@ -140,9 +153,9 @@ Tpre3 = Tpre(Tpre >= (0.5*sim.T) & Tpre<(0.75*sim.T));
 Tpre4 = Tpre(Tpre >= (0.75*sim.T));
 
 Tpre1_spk_vec = zeros(1,sim.vecN);Tpre1_spk_vec(round(Tpre1/data.dt))=1;
-Tpre2_spk_vec = zeros(1,sim.vecN);Tpre2_spk_vec(round(Tpre2/data.dt))=1;
-Tpre3_spk_vec = zeros(1,sim.vecN);Tpre3_spk_vec(round(Tpre3/data.dt))=1;
-Tpre4_spk_vec = zeros(1,sim.vecN);Tpre4_spk_vec(round(Tpre4/data.dt))=1;
+Tpre2_spk_vec = zeros(1,sim.vecN);TpreISI2_spk_vec(round(TpreISI2/data.dt))=1;
+TpreISI3_spk_vec = zeros(1,sim.vecN);TpreISI3_spk_vec(round(TpreISI3/data.dt))=1;
+TpreISI4_spk_vec = zeros(1,sim.vecN);TpreISI4_spk_vec(round(TpreISI4/data.dt))=1;
 
 
 [d1,~] = corr_fast_v3(Tpre1, Tpost,-.02,.02,40);
