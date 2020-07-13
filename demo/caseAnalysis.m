@@ -28,7 +28,7 @@ Tpre = data.pre_spk_times;
 Tpost = data.post_spk_times(:, 1);
 
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
-    fit.hist*fit.hist_beta)*dt;
+    fit.hist*fit.hist_beta)*data.dt;
 
 %% pre and post firing rate
 firRate = figure;
@@ -44,14 +44,16 @@ saveas(firRate, '2_firRate.svg')
 saveas(firRate, '2_firRate.png')
 
 %% Overall Cross Correlogram
-[d,~] = corr_fast_v3(Tpre, Tpost,-.02,.02,40);
+[d,~] = corr_fast_v3(Tpre, Tpost,-.02,.02,102);
 [d_fit, lag_fit] = xcorr(data.pre_spk_vec, lam, 20);
 
+tvec = linspace(-0.02,0.02,102);
+tvec = tvec+mean(diff(tvec))/2;
 
 corrOverall = figure;
 hold on
-bar(linspace(-.02,.02,40),d,'k');
-plot(-lag_fit*data.dt, d_fit, 'r', 'LineWidth',2)
+bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
+plot(-lag_fit*data.dt, d_fit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
 xlim([-.01 .02]);
 title('Overall Cross Correlogram')
 xlabel('s')
@@ -63,78 +65,38 @@ saveas(corrOverall, '3_overallCorr.svg')
 saveas(corrOverall, '3_overallCorr.png')
 
 %% show STP
-isi = diff(find(data.pre_spk_vec>0)*data.dt);
-isiQ1 = prctile(isi,25);
-isiQ2 = prctile(isi,50); 
-isiQ3 = prctile(isi,75);
 
-TpreISI1 = Tpre(find(isi<isiQ1)+1);
-TpreISI2 = Tpre(find(isi >= isiQ1 & isi<isiQ2)+1);
-TpreISI3 = Tpre(find(isi >= isiQ2 & isi<isiQ3)+1);
-TpreISI4 = Tpre(find(isi >= isiQ3)+1);
+isi = [Inf; diff(data.pre_spk_times)];
+quantiles = prctile(isi,linspace(0,100,5));
+maxd = -Inf;
+for q=1:length(quantiles)-1
+    qspk = data.pre_spk_times(isi>=quantiles(q) & isi<quantiles(q+1));
+    qvec = zeros(1,data.vecN);
+    qvec(round(qspk/data.dt))=1;
+    d = corr_fast_v3(qspk,data.post_spk_times,-.025,.025,64);
+    tvec = linspace(-0.025,0.025,64);
+    tvec = tvec+mean(diff(tvec))/2;
+    [dfit,lag_fit] = xcorr(qvec, lam, 25);
+    
+    subplot(1,length(quantiles)-1,q)
+    bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
+    hold on
+    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
+    title(sprintf('%0.2f ms',quantiles(q)*1000))
+    xlabel('ms')
+    ylabel('Count')
+    hold off
+    
+    if maxd<max(d),maxd=max(d); end
+end
 
-TpreISI1_spk_vec = zeros(1,sim.vecN);TpreISI1_spk_vec(round(TpreISI1/data.dt))=1;
-TpreISI2_spk_vec = zeros(1,sim.vecN);TpreISI2_spk_vec(round(TpreISI2/data.dt))=1;
-TpreISI3_spk_vec = zeros(1,sim.vecN);TpreISI3_spk_vec(round(TpreISI3/data.dt))=1;
-TpreISI4_spk_vec = zeros(1,sim.vecN);TpreISI4_spk_vec(round(TpreISI4/data.dt))=1;
+for q=1:length(quantiles)-1
+    subplot(1,length(quantiles)-1,q)
+    ylim([0 maxd])
+end
 
-
-[dISI1,~] = corr_fast_v3(TpreISI1, Tpost,-.02,.02,40);
-[dISI2,~] = corr_fast_v3(TpreISI2, Tpost,-.02,.02,40);
-[dISI3,~] = corr_fast_v3(TpreISI3, Tpost,-.02,.02,40);
-[dISI4,~] = corr_fast_v3(TpreISI4, Tpost,-.02,.02,40);
-
-[dISI1_fit, lagISI1_fit] = xcorr(TpreISI1_spk_vec, lam, 20);
-[dISI2_fit, lagISI2_fit] = xcorr(TpreISI2_spk_vec, lam, 20);
-[dISI3_fit, lagISI3_fit] = xcorr(TpreISI3_spk_vec, lam, 20);
-[dISI4_fit, lagISI4_fit] = xcorr(TpreISI4_spk_vec, lam, 20);
-
-
-yULim = ceil(max([dISI1; dISI2; dISI3; dISI4])/25)*25;
-
-corrISI = figure;
-subplot(1,4,1)
-hold on
-bar(linspace(-.02,.02,40),dISI1,'k');
-plot(-lagISI1_fit*data.dt, dISI1_fit, 'r', 'LineWidth',2)
-title('< Q_1 of ISI')
-xlim([-.01,.02]);ylim([0, yULim]);
-xlabel('s')
-ylabel('Count')
-hold off
-
-subplot(1,4,2)
-hold on
-bar(linspace(-.02,.02,40),dISI2,'k');
-plot(-lagISI2_fit*data.dt, dISI2_fit, 'r', 'LineWidth',2)
-title('Q_1 to Q_2 of ISI')
-xlim([-.01,.02]);ylim([0, yULim]);
-xlabel('s')
-ylabel('Count')
-hold off
-
-subplot(1,4,3)
-hold on
-bar(linspace(-.02,.02,40),dISI3,'k');
-plot(-lagISI3_fit*data.dt, dISI3_fit, 'r', 'LineWidth',2)
-title('Q_2 to Q_3 of ISI')
-xlim([-.01,.02]);ylim([0, yULim]);
-xlabel('s')
-ylabel('Count')
-hold off
-
-subplot(1,4,4)
-hold on
-bar(linspace(-.02,.02,40),dISI4,'k');
-plot(-lagISI4_fit*data.dt, dISI4_fit, 'r', 'LineWidth',2)
-title('> Q_3 of ISI')
-xlim([-.01,.02]);ylim([0, yULim]);
-xlabel('s')
-ylabel('Count')
-hold off
-
-saveas(corrISI, '4_corrISI.svg')
-saveas(corrISI, '4_corrISI.png')
+% saveas(corrISI, '4_corrISI.svg')
+% saveas(corrISI, '4_corrISI.png')
 
 %% show LTP
 

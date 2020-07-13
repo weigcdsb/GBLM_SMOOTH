@@ -5,6 +5,7 @@ data.T = 300;
 data.dt = 0.001;
 data.vecN = round(data.T/data.dt);
 
+sim.seed = 0;
 sim.pPreSpike = 10*data.dt;
 sim.alpha_dt = 0.002;
 sim.alpha_tau = 0.001;
@@ -12,14 +13,14 @@ sim.stp_Nq = 5;
 sim.stp_Nm = 450;
 sim.stp_Ns = 50;
 sim.stp_tau= 1; % timeconstant for decay
-sim.stp_B = [1 1 1 1 1]'*-.02;
+sim.stp_B = [1 1 1 1 1]'*-.05;
 sim.hist_tau = .01;
 sim.hist_beta = 0;
 
 % sim.beta0 = ones(data.vecN,1)*2;
 % sim.wt_long = ones(data.vecN,1)*2;
 sim.beta0 = 2+detrend(cumsum(randn(data.vecN,1)*10e-4));
-sim.wt_long = 2+detrend(cumsum(randn(data.vecN,1)*10e-3));
+sim.wt_long = 4+detrend(cumsum(randn(data.vecN,1)*10e-3));
 
 [data,sim] = sim_model(data,sim);
 
