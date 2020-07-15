@@ -8,8 +8,8 @@ clc;clear all;close all;
 % cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\1_facilitation_constant'
 % cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\2_depression_constant'
 % cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\3_no_plasticity_constant'
-% cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\4_depression_linear_jump'
-cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\5_depression_sin_sin'
+cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\4_depression_linear_jump'
+% cd 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\5_depression_sin_sin'
 
 %% diagnose (informal)
 paramPlot(fit.beta0, squeeze(fit.W(1, 1, :)), sim.beta0,...
