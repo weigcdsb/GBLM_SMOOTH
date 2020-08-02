@@ -7,14 +7,27 @@ clc;clear all;close all;
 % load('E:\caseDemoResults_0715\2_depression_constant.mat');
 % load('E:\caseDemoResults_0715\3_noPlasticity_constant.mat');
 % load('E:\caseDemoResults_0715\4_depression_linearJump.mat');
-load('E:\caseDemoResults_0715\5_depression_sinSin.mat');
+% load('E:\caseDemoResults_0715\5_depression_sinSin.mat');
+
+% load('E:\casedDemoResults_supp_0801\1_facilitation_conJump.mat');
+% load('E:\casedDemoResults_supp_0801\2_depression_conJump.mat');
+% load('E:\casedDemoResults_supp_0801\3_noPlasticity_conJump.mat');
+% load('E:\casedDemoResults_supp_0801\4_depression_conLinear.mat');
+load('E:\casedDemoResults_supp_0801\5_depression_conSin.mat');
 
 
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\1_facilitation_constant';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\2_depression_constant';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\3_no_plasticity_constant';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\4_depression_linear_jump';
-plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\5_depression_sin_sin';
+
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\1_facilitation_constant';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\2_depression_constant';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\3_no_plasticity_constant';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\4_depression_linear_jump';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\5_depression_sin_sin';
+
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\1_facilitation_conJump';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\2_depression_conJump';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\3_noPlasticity_conJump';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\4_depression_conLinear';
+plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\5_depression_conSin';
 
 cd(plotFolder)
 %% diagnose (informal)
@@ -25,11 +38,11 @@ paramPlot(fit.beta0, squeeze(fit.W(1, 1, :)), sim.beta0,...
 
 modFun = figure;
 hold on
-modPlot(sim, fit)
-xlabel('ISI (ms)')
-ylabel('Modification Weight')
-% ylim([-.5 .5])
-ylim([-0.5 .05])
+modPlot(sim, fit, 3, 2)
+% xlabel('ISI (ms)')
+% ylabel('Modification Weight')
+ylim([-.5 .5])
+% ylim([-0.5 .05])
 hold off
 
 saveas(modFun, '1_modificationFuntion.svg')
@@ -45,13 +58,13 @@ lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
 %% pre and post firing rate
 firRate = figure;
 hold on
-plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,data.pre_spk_vec)/2, 'b');
-plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,data.post_spk_vec)/2, 'k');
-plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,lam)/2, 'r');
+plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,data.pre_spk_vec)/2, 'b', 'LineWidth', 1.5);
+plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,data.post_spk_vec)/2, 'k', 'LineWidth', 1.5);
+plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,lam)/2, 'r', 'LineWidth', 1.5);
 hold off
-legend('pre', 'post', 'post-fit')
-xlabel('Time (s)')
-ylabel('Firing Rates')
+% legend('pre', 'post', 'post-fit')
+% xlabel('Time (s)')
+% ylabel('Firing Rates')
 % ylim([0 45])
 ylim([0 40])
 
@@ -68,15 +81,15 @@ tvec = tvec+mean(diff(tvec))/2;
 corrOverall = figure;
 hold on
 bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
-plot(-lag_fit*data.dt, d_fit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
+plot(-lag_fit*data.dt, d_fit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
 xlim([-.01 .02]);
 % title('Overall Cross Correlogram')
-xlabel('Time (s)')
-ylabel('Count')
-legend('data', 'fitted results')
+% xlabel('Time (s)')
+% ylabel('Count')
+% legend('data', 'fitted results')
 hold off
-% ylim([0 600])
-ylim([0 250])
+ylim([0 600])
+% ylim([0 250])
 
 saveas(corrOverall, '3_overallCorr.svg')
 saveas(corrOverall, '3_overallCorr.png')
@@ -100,7 +113,7 @@ for q=1:length(quantiles)-1
     subplot(1,length(quantiles)-1,q)
     bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
     hold on
-    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
+    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
     title(sprintf('%0.2f ms',quantiles(q)*1000))
     xlabel('Time (s)')
     ylabel('Count')
@@ -133,7 +146,7 @@ for q=1:4
     subplot(1,4,q)
     bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
     hold on
-    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
+    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
     title(sprintf('%0.2f s', q*0.25*sim.T))
     xlabel('ms')
     ylabel('Count')
@@ -175,10 +188,10 @@ for q=1:length(quantiles)-1
     corrISI = figure;
     bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
     hold on
-    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
-    title(sprintf('%0.2f ms',quantiles(q)*1000))
-    xlabel('Time (s)')
-    ylabel('Count')
+    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
+%     title(sprintf('%0.2f ms',quantiles(q)*1000))
+%     xlabel('Time (s)')
+%     ylabel('Count')
     hold off
     ylim([0 ceil(maxd/50)*50])
     xlim([-0.01 0.02])
@@ -212,10 +225,10 @@ for q=1:4
     corrT = figure;
     bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
     hold on
-    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',2)
-    title(sprintf('%0.2f s', q*0.25*sim.T))
-    xlabel('ms')
-    ylabel('Count')
+    plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
+%     title(sprintf('%0.2f s', q*0.25*sim.T))
+%     xlabel('ms')
+%     ylabel('Count')
     hold off
     ylim([0 ceil(maxd/50)*50])
     xlim([-0.01 0.02])
