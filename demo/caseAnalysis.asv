@@ -6,28 +6,28 @@ clc;clear all;close all;
 % load('E:\caseDemoResults_0715\1_facilitation_constant.mat');
 % load('E:\caseDemoResults_0715\2_depression_constant.mat');
 % load('E:\caseDemoResults_0715\3_noPlasticity_constant.mat');
-% load('E:\caseDemoResults_0715\4_depression_linearJump.mat');
+load('E:\caseDemoResults_0715\4_depression_linearJump.mat');
 % load('E:\caseDemoResults_0715\5_depression_sinSin.mat');
 
 % load('E:\casedDemoResults_supp_0801\1_facilitation_conJump.mat');
 % load('E:\casedDemoResults_supp_0801\2_depression_conJump.mat');
 % load('E:\casedDemoResults_supp_0801\3_noPlasticity_conJump.mat');
 % load('E:\casedDemoResults_supp_0801\4_depression_conLinear.mat');
-load('E:\casedDemoResults_supp_0801\5_depression_conSin.mat');
+% load('E:\casedDemoResults_supp_0801\5_depression_conSin.mat');
 
 
 
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\1_facilitation_constant';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\2_depression_constant';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\3_no_plasticity_constant';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\4_depression_linear_jump';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case\5_depression_sin_sin';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\1_facilitation_constant';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\2_depression_constant';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\3_no_plasticity_constant';
+plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\4_depression_linear_jump';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_refine\5_depression_sin_sin';
 
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\1_facilitation_conJump';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\2_depression_conJump';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\3_noPlasticity_conJump';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\4_depression_conLinear';
-plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\5_depression_conSin';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\case_supp\5_depression_conSin';
 
 cd(plotFolder)
 %% diagnose (informal)
@@ -41,9 +41,7 @@ hold on
 modPlot(sim, fit, 3, 2)
 % xlabel('ISI (ms)')
 % ylabel('Modification Weight')
-ylim([.5 1.5])
-box off
-set(gca,'FontSize',15, 'LineWidth', 1.5)
+ylim([-.5 .5])
 % ylim([-0.5 .05])
 hold off
 
@@ -69,9 +67,6 @@ hold off
 % ylabel('Firing Rates')
 % ylim([0 45])
 ylim([0 40])
-set(gca,'FontSize',15, 'LineWidth', 1.5)
-box off
-
 
 saveas(firRate, '2_firRate.svg')
 saveas(firRate, '2_firRate.png')
@@ -94,8 +89,6 @@ xlim([-.01 .02]);
 % legend('data', 'fitted results')
 hold off
 ylim([0 600])
-set(gca,'FontSize',15, 'LineWidth', 1.5)
-box off
 % ylim([0 250])
 
 saveas(corrOverall, '3_overallCorr.svg')
@@ -124,7 +117,6 @@ for q=1:length(quantiles)-1
     title(sprintf('%0.2f ms',quantiles(q)*1000))
     xlabel('Time (s)')
     ylabel('Count')
-    %     set(gca,'FontSize',15, 'LineWidth', 1.5)
     hold off
     
     if maxd<max(d),maxd=max(d); end
@@ -197,11 +189,9 @@ for q=1:length(quantiles)-1
     bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
     hold on
     plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
-    %     title(sprintf('%0.2f ms',quantiles(q)*1000))
-    %     xlabel('Time (s)')
-    %     ylabel('Count')
-    set(gca,'FontSize',15, 'LineWidth', 1.5)
-    box off
+%     title(sprintf('%0.2f ms',quantiles(q)*1000))
+%     xlabel('Time (s)')
+%     ylabel('Count')
     hold off
     ylim([0 ceil(maxd/50)*50])
     xlim([-0.01 0.02])
@@ -236,11 +226,9 @@ for q=1:4
     bar(tvec(1:end-1),d(1:end-1),1,'k','EdgeColor','none');
     hold on
     plot(-lag_fit*data.dt, dfit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
-    %     title(sprintf('%0.2f s', q*0.25*sim.T))
-    %     xlabel('ms')
-    %     ylabel('Count')
-    set(gca,'FontSize',15, 'LineWidth', 1.5)
-    box off
+%     title(sprintf('%0.2f s', q*0.25*sim.T))
+%     xlabel('ms')
+%     ylabel('Count')
     hold off
     ylim([0 ceil(maxd/50)*50])
     xlim([-0.01 0.02])
