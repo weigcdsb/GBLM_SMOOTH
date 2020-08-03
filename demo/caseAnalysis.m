@@ -68,7 +68,7 @@ hold off
 % xlabel('Time (s)')
 % ylabel('Firing Rates')
 % ylim([0 45])
-ylim([0 40])
+% ylim([0 40])
 set(gca,'FontSize',15, 'LineWidth', 1.5)
 box off
 
