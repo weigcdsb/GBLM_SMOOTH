@@ -8,7 +8,7 @@ clc;clear all;close all;
 % load('E:\suppResults_0803\2_supp_depression_sinJump.mat')
 % load('E:\suppResults_0803\3_supp_depression_linearLinear.mat')
 % load('E:\suppResults_0803\4_supp_depression_linearSin.mat')
-% load('E:\suppResults_0803\5_supp_depression_sinLinear.mat')
+load('E:\suppResults_0803\5_supp_depression_sinLinear.mat')
 % load('E:\suppResults_0803\6_supp_depression_sinSin.mat')
 % load('E:\suppResults_0803\7_supp_depression_conJump_5hzPre.mat')
 % load('E:\suppResults_0803\8_supp_depression_conJump_10hzPre.mat')
@@ -17,7 +17,7 @@ clc;clear all;close all;
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig3_plot\2_supp_depression_sinJump';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig3_plot\3_supp_depression_linearLinear';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig3_plot\4_supp_depression_linearSin';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig3_plot\5_supp_depression_sinLinear';
+plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig3_plot\5_supp_depression_sinLinear';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig3_plot\6_supp_depression_sinSin';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig4_plot\7_supp_depression_conJump_5hzPre';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig4_plot\8_supp_depression_conJump_10hzPre';
@@ -132,7 +132,8 @@ for q=1:4
     set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
     box off
     hold off
-    ylim([0 ceil(maxd/50)*50])
+    %     ylim([0 ceil(maxd/50)*50])
+    ylim([0 150])
     xlim([-0.01 0.02])
     
     set(corrT,'PaperUnits','inches','PaperPosition',[0 0 4 3])

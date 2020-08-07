@@ -5,15 +5,15 @@ addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
 clc;clear all;close all;
 % load('E:\casedDemoResults_supp_0801\1_facilitation_conJump.mat');
 % load('E:\casedDemoResults_supp_0801\2_depression_conJump.mat');
-% load('E:\casedDemoResults_supp_0801\3_noPlasticity_conJump.mat');
+load('E:\casedDemoResults_supp_0801\3_noPlasticity_conJump.mat');
 % load('E:\casedDemoResults_supp_0801\4_depression_conLinear.mat');
-load('E:\casedDemoResults_supp_0801\5_depression_conSin.mat');
+% load('E:\casedDemoResults_supp_0801\5_depression_conSin.mat');
 
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\1_facilitation_conJump';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\2_depression_conJump';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\3_noPlasticity_conJump';
+plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\3_noPlasticity_conJump';
 % plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\4_depression_conLinear';
-plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\5_depression_conSin';
+% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\5_depression_conSin';
 
 cd(plotFolder)
 
@@ -91,7 +91,8 @@ for q=1:length(quantiles)-1
     set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
     box off
     hold off
-    ylim([0 ceil(maxd/50)*50])
+    %     ylim([0 ceil(maxd/50)*50])
+    ylim([0 200])
     xlim([-0.01 0.02])
     
     set(corrISI,'PaperUnits','inches','PaperPosition',[0 0 4 3])
