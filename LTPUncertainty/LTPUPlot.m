@@ -13,6 +13,6 @@ paramPlot(fit.beta0, squeeze(fit.W(1, 1, :)), sim.beta0,...
     fit.covB, fit.stp_X)
 
 figure(3)
-modPlot(sim, fit)
+modPlot(sim, fit, 3, 2)
 
 end

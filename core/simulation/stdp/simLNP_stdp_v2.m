@@ -1,4 +1,4 @@
-function [firings,g] = simLNP_stdp(alph,delta,lim,beta,X,S,stdp_params)
+function [firings,g] = simLNP_stdp_v2(alph,delta,lim,beta,X,S,stdp_params)
 
 C = size(alph,1);
 Ms = (size(alph,2)-1)/C;
@@ -83,7 +83,7 @@ while cont
     %     I = circshift(I',1)';
     I(2:end) = I(1:end-1);
     I(1) = 1;
-    if Ms>0,
+    if Ms>0
         I(2:Ms:C*Ms+1) = fired;
     end
 

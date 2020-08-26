@@ -1,12 +1,12 @@
-addpath(genpath('D:/cleanTemp/helper'));
-addpath(genpath('D:/cleanTemp/core'));
+addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/helper'));
+addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
 
 %% set up simulation
 clc; clear all; close all;
 rng(123)
 
 sim.seed = randi(10);
-sim.T = 10*60;
+sim.T = 20*60;
 sim.dt = 1e-3;
 sim.vecN = round(sim.T/sim.dt);
 sim.pPreSpike = ones(sim.vecN,1)*5*sim.dt;

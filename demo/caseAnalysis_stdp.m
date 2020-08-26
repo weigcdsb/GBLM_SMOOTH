@@ -66,11 +66,22 @@ saveas(effi, '4_fr.png')
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
     fit.hist*fit.hist_beta)*data.dt;
 
+fitResults = figure;
+subplot(2,2,1)
 plot(1 + fit.stp_basis'*fit.wt_short_param, 'r', 'LineWidth', 2)
+title('Modification Function')
+subplot(2,2,2)
 plot(fit.beta0)
+title('Baseline')
+subplot(2,2,3)
 plot(fit.wt_long)
+title('LTP')
+subplot(2,2,4)
 plot(fit.wt_short)
-plot(lam)
+title('STP')
+
+saveas(fitResults, '5_fitResults.png')
+
 
 fit.synParams.syn_params(1)
 fit.synParams.syn_params(2)
@@ -184,7 +195,7 @@ for q=1:length(quantiles)-1
     box off
     hold off
     %     ylim([0 ceil(maxd/50)*50])
-    ylim([0 200])
+    ylim([0 100])
     xlim([-0.01 0.02])
     
     set(corrISI,'PaperUnits','inches','PaperPosition',[0 0 4 3])

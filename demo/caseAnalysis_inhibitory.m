@@ -54,7 +54,7 @@ saveas(ltp, '2_ltp.png')
 modFun = figure;
 hold on
 modPlot(sim, fit, 3, 2)
-ylim([0.5 2])
+ylim([0 1.5])
 hold off
 set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
 box off
@@ -97,7 +97,8 @@ for q=1:length(quantiles)-1
     set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
     box off
     hold off
-    ylim([0 ceil(maxd/50)*50])
+%     ylim([0 ceil(maxd/50)*50])
+    ylim([0 700])
     xlim([-0.01 0.02])
     
     set(corrISI,'PaperUnits','inches','PaperPosition',[0 0 4 3])

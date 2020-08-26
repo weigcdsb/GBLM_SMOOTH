@@ -9,28 +9,28 @@ sim.pPreSpike = 5*sim.dt;
 sim.T = 30*60;
 
 % parameters for history basis
-sim.postBaseRate = 20; %Hz
+sim.postBaseRate = 5; %Hz
 sim.mprops.nfilt = 5;
-sim.mprops.delay = 400/(sim.dt*1000);
-sim.b = [0 0.1 0.9 0.4 0.1]'/1.75; % coupling parameters
-sim.hist_tau = 0.005; % history filter
+sim.mprops.delay = 20;
+sim.b = [0.1 0.9 0.4 0.3 0.1]'/1.5; % coupling parameters
+sim.hist_tau = 0.0005; % history filter
 sim.hist_beta = -10;
 
 % stdp parameters
 sim.stdp_params.noise = 0; % in s
-sim.stdp_params.tau_forgetting = 15; % in s
+sim.stdp_params.tau_forgetting = 20; % in s
 
 sim.stdp_params.type = 'dexp';
 sim.stdp_params.tau_plus = 20/1000; % in s
 sim.stdp_params.tau_minus = 20/1000; % in s
-sim.stdp_params.A_plus = 0.003; 
-sim.stdp_params.A_minus = 0.5*sim.stdp_params.A_plus;
+sim.stdp_params.A_plus = 0.006; 
+sim.stdp_params.A_minus = 0.002;
 
 % sim.stdp_params.type = 'ahebb';
-% sim.stdp_params.tau_plus = 20/1000; % in s
+% sim.stdp_params.tau_plus = 50/1000; % in s
 % sim.stdp_params.tau_minus = 50/1000; % in s
 % sim.stdp_params.A_plus = 0.005;
-% sim.stdp_params.A_minus = 0.475*sim.stdp_params.A_plus;
+% sim.stdp_params.A_minus = 0.2*sim.stdp_params.A_plus;
 
 sim.stdp_params.g_max = 50;
 sim.stdp_params.g_init = 1;
