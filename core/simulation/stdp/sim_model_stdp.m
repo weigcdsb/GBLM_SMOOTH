@@ -16,8 +16,15 @@ end
 data.pre_spk_vec = getSpkMat(data.pre_spk_times,sim.dt,sim.T,1);
 
 % coupling term
-sim.mprops.basis{2} = getBasis('rcos',sim.mprops.nfilt,sim.mprops.delay,50,0);
-sim.b=sim.b+randn(size(sim.b))/norm(sim.b)/10;
+% sim.mprops.basis{2} = getBasis('rcos',sim.mprops.nfilt,sim.mprops.delay,50,0);
+% sim.b=sim.b+randn(size(sim.b))/norm(sim.b)/10;
+
+% Synaptic Connection
+sim.syn = @(ts) max(0,ts-sim.alpha_dt)/sim.alpha_tau.*exp(1-max(0,ts-sim.alpha_dt)/sim.alpha_tau);
+syn_kern = sim.syn(linspace(0, 1, 1/sim.dt));
+Xc = filter(syn_kern, 1, data.pre_spk_vec');
+wt = sim.wt_long(1);
+
 
 % history filter
 x0 = linspace(0,1,1/sim.dt);
@@ -25,8 +32,7 @@ kern_hist = exp(-x0/sim.hist_tau);
 sim.post_alph = [log(sim.postBaseRate) kern_hist*sim.hist_beta];
 
 % Generate postsynaptic spikes
-X = getX(data.pre_spk_vec,sim.mprops.basis{2},0,1,0)';
-[firingsPost,sim.g] = simLNP_stdp_v2(sim.post_alph,sim.dt,sim.T,sim.b,X,...
+[firingsPost,sim.g] = simLNP_stdp_v2(sim.post_alph,sim.dt,sim.T,wt,Xc,...
     data.pre_spk_vec,sim.stdp_params);
 
 data.post_spk_times = firingsPost(:,1);

@@ -8,10 +8,10 @@ dt = 0.001;
 Q = diag([1e-5 1e-5]);
 
 % trueParam = [0 0 1 3 1]'*(-0.16);
-trueParam = [0 0 1 3 1]'*(-0.04);
+trueParam = [0 0 1 3 1]'*(-0.16);
 beta0 = ones(1, T/dt)'*6;
 
-wt_long = [repmat(-8, 1, round(T/(dt*2))) repmat(-4, 1, T/dt - round(T/(dt*2)))]';
+wt_long = [repmat(-1, 1, round(T/(dt*2))) repmat(-0.5, 1, T/dt - round(T/(dt*2)))]';
 
 
 sim.seed = 123;
@@ -33,19 +33,12 @@ sim.beta0 = beta0;
 sim.wt_long = wt_long;
 data.dt = sim.dt;
 [data,sim] = sim_model(data,sim);
-%%
+
 [fit,~] = smooth_gblm(data.pre_spk_vec, data.post_spk_vec,...
     'iter',10, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta);
 
 save('inhibitory_depression.mat')
 
 %%
-figure(1)
-subplot(1,3,1:2)
-plot(sim.stp_X*sim.stp_B+1)
-subplot(1,3,3)
- d = corr_fast_v3(data.pre_spk_times,data.post_spk_times(:,1),-.025,.025,64);
- t = linspace(-.025,.025,64);
- t = t+mean(diff(t))/2;
- bar(t,d,1,'EdgeColor','none')
- box off; set(gca,'TickDir','out')
+
+ d = corr_fast_v3(qspk,Tpost,-.025,.025,64);

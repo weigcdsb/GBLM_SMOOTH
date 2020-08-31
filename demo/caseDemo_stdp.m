@@ -10,11 +10,15 @@ sim.T = 30*60;
 
 % parameters for history basis
 sim.postBaseRate = 5; %Hz
-sim.mprops.nfilt = 5;
-sim.mprops.delay = 20;
-sim.b = [0.1 0.9 0.4 0.3 0.1]'/1.5; % coupling parameters
 sim.hist_tau = 0.0005; % history filter
 sim.hist_beta = -10;
+
+% sim.mprops.nfilt = 5;
+% sim.mprops.delay = 20;
+% sim.b = [0.1 0.9 0.4 0.3 0.1]'/1.5; % coupling parameters
+sim.wt_long = 1;
+sim.alpha_dt = 0.004;
+sim.alpha_tau = 0.001;
 
 % stdp parameters
 sim.stdp_params.noise = 0; % in s
@@ -42,4 +46,14 @@ sim.stdp_params.g_init = 1;
     'iter',10, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta);
 
 save('stdpSim.mat');
+%%
 
+figure(1)
+subplot(1,3,1:2)
+plot(sim.g)
+subplot(1,3,3)
+ d = corr_fast_v3(data.pre_spk_times,data.post_spk_times(:,1),-.025,.025,64);
+ t = linspace(-.025,.025,64);
+ t = t+mean(diff(t))/2;
+ bar(t,d,1,'EdgeColor','none')
+ box off; set(gca,'TickDir','out')
