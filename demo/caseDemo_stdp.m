@@ -3,10 +3,11 @@ addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
 
 %% generate simulation data
 clc;clear all;close all;
+burnIn = 5*60;
 sim.seed = 123;
 sim.dt = 0.001;
 sim.pPreSpike = 5*sim.dt;
-sim.T = 20*60;
+sim.T = 20*60+burnIn;
 
 % parameters for history basis
 sim.postBaseRate = 15; %Hz
@@ -39,6 +40,17 @@ sim.stdp_params.g_init = 1;
 
 [data,sim] = sim_model_stdp(sim);
 
+% throw burn-in data
+sim.T = 20*60;
+sim.stp_X = sim.stp_X((burnIn/sim.dt+1):end, :);
+sim.g = sim.g((burnIn/sim.dt+1):end);
+
+data.T = 20*60;
+data.pre_spk_vec = data.pre_spk_vec((burnIn/sim.dt+1):end);
+data.post_spk_vec = data.post_spk_vec((burnIn/sim.dt+1):end);
+data.pre_spk_times = find(data.pre_spk_vec ~= 0 )*data.dt;
+data.post_spk_times = find(data.post_spk_vec ~= 0 )*data.dt;
+
 %% fit model
 [fit,~] = smooth_gblm(data.pre_spk_vec, data.post_spk_vec,...
     'iter',10, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta);
@@ -50,7 +62,7 @@ figure(1)
 subplot(1,3,1:2)
 plot(sim.g)
 subplot(1,3,3)
-d = corr_fast_v3(data.pre_spk_times,data.post_spk_times(:,1),-.025,.025,64);
+d = corr_fast_v3(data.pre_spk_times',data.post_spk_times',-.025,.025,64);
 t = linspace(-.025,.025,64);
 t = t+mean(diff(t))/2;
 bar(t,d,1,'EdgeColor','none')

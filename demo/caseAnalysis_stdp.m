@@ -3,8 +3,8 @@
 plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\stdp';
 cd(plotFolder)
 
-Tpre = data.pre_spk_times;
-Tpost = data.post_spk_times(:, 1);
+Tpre = data.pre_spk_times';
+Tpost = data.post_spk_times';
 data.vecN = length(data.pre_spk_vec);
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
     fit.hist*fit.hist_beta)*data.dt;
@@ -73,7 +73,7 @@ quantiles = prctile(isi,linspace(0,100,5));
 
 for q=1:length(quantiles)-1
     qspk = Tpre(isi>=quantiles(q) & isi<quantiles(q+1));
-    d = corr_fast_v3(qspk,Tpost,-.025,.025,64);
+    d = corr_fast_v3(qspk,Tpost,-.025,.025,50);
     if maxd<max(d),maxd=max(d); end
 end
 
@@ -82,8 +82,8 @@ for q=1:length(quantiles)-1
     qspk = Tpre(isi>=quantiles(q) & isi<quantiles(q+1));
     qvec = zeros(1,data.vecN);
     qvec(round(qspk/data.dt))=1;
-    d = corr_fast_v3(qspk,Tpost,-.025,.025,64);
-    tvec = linspace(-0.025,0.025,64);
+    d = corr_fast_v3(qspk,Tpost,-.025,.025,50);
+    tvec = linspace(-0.025,0.025,50);
     tvec = tvec+mean(diff(tvec))/2;
     [dfit,lag_fit] = xcorr(qvec, lam, 25);
     
@@ -94,7 +94,7 @@ for q=1:length(quantiles)-1
     set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
     box off
     hold off
-    ylim([0 ceil(maxd/50)*50])
+    ylim([0 250])
     xlim([-0.01 0.02])
     
     set(corrISI,'PaperUnits','inches','PaperPosition',[0 0 4 3])

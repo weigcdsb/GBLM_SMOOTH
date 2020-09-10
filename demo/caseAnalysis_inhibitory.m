@@ -37,7 +37,7 @@ plot(idx, fit.wt_long, 'r', 'LineWidth', 3)
 plot(idx, sim.wt_long, 'k', 'LineWidth', 3)
 plot(idx, fit.wt_long + sqrt(squeeze(fit.W(2, 2, :))), 'r:', 'LineWidth', 2)
 plot(idx, fit.wt_long - sqrt(squeeze(fit.W(2, 2, :))), 'r:', 'LineWidth', 2)
-ylim([min(sim.wt_long)-3 max(sim.wt_long)+3])
+ylim([min(sim.wt_long)-4 max(sim.wt_long)+4])
 xlim([0 sim.T/sim.dt])
 xticks([0 2 4 6 8 10 12]*1e5)
 xticklabels({'0','200','400','600','800','1000','1200'})
@@ -54,7 +54,7 @@ saveas(ltp, '2_ltp.png')
 modFun = figure;
 hold on
 modPlot(sim, fit, 3, 2)
-ylim([0.8 1.1])
+ylim([0.8 1.05])
 hold off
 set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
 box off
@@ -97,7 +97,7 @@ for q=1:length(quantiles)-1
     set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
     box off
     hold off
-    ylim([0 ceil(maxd/50)*50])
+    ylim([0 500])
 %     ylim([0 700])
     xlim([-0.01 0.02])
     
@@ -135,7 +135,7 @@ for q=1:4
     set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
     box off
     hold off
-    ylim([0 ceil(maxd/50)*50])
+    ylim([0 500])
     xlim([-0.01 0.02])
     
     set(corrT,'PaperUnits','inches','PaperPosition',[0 0 4 3])
