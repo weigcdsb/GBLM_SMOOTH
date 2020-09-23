@@ -22,6 +22,8 @@ hold off
 
 plot(1 + sim.stp_basis'*sim.stp_B)
 
+plot(sim.wt_long.*(1 + sim.stp_X*sim.stp_B))
+
 plot(sim.lam*dt)
 
 %% post fit
