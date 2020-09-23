@@ -83,7 +83,7 @@ hold on
 bar(tvec(1:end-1)*1e3,d(1:end-1),1,'k','EdgeColor','none');
 plot(-lag_fit*data.dt*1e3, d_fit*mean(diff(tvec))/data.dt, 'r', 'LineWidth',3)
 xlim([-.01 .02]*1e3);
-ylim([0 350])
+ylim([0 450])
 set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
 box off
 hold off
@@ -127,7 +127,7 @@ for q=1:length(quantiles)-1
     box off
     hold off
     %     ylim([0 ceil(maxd/50)*50])
-    ylim([0 250])
+    ylim([0 300])
     xlim([-0.01 0.02])
     
     set(corrISI,'PaperUnits','inches','PaperPosition',[0 0 4 3])
@@ -165,7 +165,7 @@ for q=1:4
     box off
     hold off
     %     ylim([0 ceil(maxd/50)*50])
-    ylim([0 250])
+    ylim([0 300])
     xlim([-0.01 0.02])
     
     set(corrT,'PaperUnits','inches','PaperPosition',[0 0 4 3])
