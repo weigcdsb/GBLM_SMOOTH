@@ -13,7 +13,12 @@ kern_stp = exp(-x0/fit.stp_tau);
 fit.stp_X = filter(kern_stp,1,s');
 
 % alpha function
-[fit.syn,fit.deltaT,fit.synParams,~]= synapse_xcorr_conv({data.pre_spk_times,data.post_spk_times},fit.syn_hyper_params);
+if (~isfield(fit, 'synParams'))
+    [fit.syn,fit.deltaT,fit.synParams,~]= synapse_xcorr_conv({data.pre_spk_times,data.post_spk_times},fit.syn_hyper_params);
+else
+    fit.syn = @(ts) max(0,ts-fit.synParams.syn_params(1))/fit.synParams.syn_params(2).*exp(1-max(0,ts-fit.synParams.syn_params(1))/fit.synParams.syn_params(2));
+end
+
 fit.syn_kern = fit.syn(linspace(0, .1, .1/data.dt));
 fit.Xc = filter(fit.syn_kern, 1, data.pre_spk_vec');
 

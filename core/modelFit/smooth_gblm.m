@@ -120,13 +120,19 @@ if (~isempty(varargin))
                 fit.oracle_wt_long = varargin{c+1};
             case {'oracle_stp_B'}
                 fit.oracle_stp_B = varargin{c+1};
+            case {'synParams'}
+                fit.synParams = varargin{c+1};
         end % switch
         c = c + 2;
     end % for
 end % if
 
+
 %% Synaptic Connection
 fit = synConEst(data,fit);
+
+disp(fit.synParams.syn_params(1))
+disp(fit.synParams.syn_params(2))
 
 %% Smoothing_GBLM
 if fit.doOracle

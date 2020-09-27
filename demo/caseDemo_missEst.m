@@ -1,30 +1,35 @@
-% addpath(genpath('D:/GitHub/GBLM_SMOOTH/helper'));
-% addpath(genpath('D:/GitHub/GBLM_SMOOTH/core'));
-addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/helper'));
-addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
+addpath(genpath('D:/GitHub/GBLM_SMOOTH/helper'));
+addpath(genpath('D:/GitHub/GBLM_SMOOTH/core'));
+% addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/helper'));
+% addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
 
 %% set up parameters
 clc;clear all;close all;
-rng(7)
+rng(8)
 T = 20*60;
 dt = 0.001;
 Q = diag([1e-5 1e-5]);
 trueParam = [0 0 1 3 1]'*(-0.05);
 
-n = 6;
-x0 = normrnd(3, 1, n, 1);
-beta0 = (interp1(linspace(0,T,length(x0)),x0,linspace(0,T,T/dt),'spline'))';
-plot(beta0)
+n = 30;
+nb0 = normrnd(3, 1, n, 1);
+beta0 = (interp1(linspace(0,T,length(nb0)),nb0,linspace(0,T,T/dt),'spline'))';
+% plot(beta0)
 
 wt_long = ones(1, T/dt)'*3;
-
 sim.seed = randperm(50, 1);
 sim.T = T;
 sim.dt = dt;
 sim.vecN = round(sim.T/sim.dt);
-sim.pPreSpike = 5*sim.dt;
+
+np0 = normrnd(8*sim.dt, 4*sim.dt, n, 1);
+sim.pPreSpike = interp1(linspace(0,T,length(np0)),np0,linspace(0,T,T/dt),'spline');
+sim.pPreSpike(sim.pPreSpike < 0) = 0;
+plot(sim.pPreSpike)
+
+
 sim.alpha_dt = 0.004;
-sim.alpha_tau = 0.001;
+sim.alpha_tau = 0.002;
 sim.stp_Nq = 5;
 sim.stp_Nm = 450;
 sim.stp_Ns = 50;
@@ -41,18 +46,24 @@ data.dt = sim.dt;
 [fit,~] = smooth_gblm(data.pre_spk_vec, data.post_spk_vec,...
     'iter',10, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta, 'Q', Q);
 
-save('complete.mat')
+save('complete2.mat')
 
+disp(fit.synParams.syn_params(1))
+disp(fit.synParams.syn_params(2))
 %% beta0 constant
 Q = diag([0 1e-5]);
 
+synParams = fit.synParams;
+clear fit;
 [fit,~] = smooth_gblm(data.pre_spk_vec, data.post_spk_vec,...
-    'iter',10, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta, 'Q', Q);
+    'iter',20, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta,...
+    'Q', Q, 'synParams', synParams);
 
 save('b0Constant.mat')
 
 %% no estimation on wt_short
 data.vecN = length(data.pre_spk_vec);
+clear fit;
 fit.hist_tau = sim.hist_tau;
 fit.hist_beta = sim.hist_beta;
 
@@ -76,7 +87,9 @@ fit.doFiltOnly = false;
 fit.doOracle = false;
 
 % Synaptic Connection
+fit.synParams = synParams;
 fit = synConEst(data,fit);
+
 fit.W = zeros(2, 2, data.vecN);
 offset = log(data.dt) + fit.hist*fit.hist_beta;
 alph = glmfit([fit.Xc],data.post_spk_vec,'poisson','Offset',offset);
@@ -107,31 +120,23 @@ plot(idx, fit.beta0,...
 title('beta_0')
 
 subplot(2, 1, 2)
-plot(idx, sim.wt_long.*(1 + sim.stp_X*sim.stp_B), 'r',...
+hold on
+plot(idx, sim.wt_long, 'r',...
     idx, fit.wt_long, 'b',...
     idx, fit.wt_long + sqrt(squeeze(fit.W(2, 2, :))), 'b:',...
     idx, fit.wt_long - sqrt(squeeze(fit.W(2, 2, :))), 'b:');
+% plot(idx, fit.wt_long, 'b',...
+%     idx, fit.wt_long + sqrt(squeeze(fit.W(2, 2, :))), 'b:',...
+%     idx, fit.wt_long - sqrt(squeeze(fit.W(2, 2, :))), 'b:');
+plot(idx, sim.wt_long*mean(1 + sim.stp_X*sim.stp_B))
+
 title('wt_{long}')
-
-
-plot(sim.lam*dt)
-hold on
-plot(exp(fit.beta0 + fit.wt_long.*fit.Xc + fit.hist*fit.hist_beta)*dt, 'r')
 hold off
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% 
+% 
+% 
+% plot(sim.lam*dt)
+% hold on
+% plot(exp(fit.beta0 + fit.wt_long.*fit.Xc + fit.hist*fit.hist_beta)*dt, 'r')
+% hold off
 
