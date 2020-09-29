@@ -1,5 +1,5 @@
 function [fit, fit_trace, Qvec,...
-    qbllhd_pred, qbllhd_pred_flat, qwllhd_pred, qwllhd_pred_flat, Qopt] =...
+    qbllhd_pred, qwllhd_pred, Qopt] =...
     tune_smooth_gblm(preSpk, postSpk, varargin)
 % TUNE_SMOOTH_GBLM is a Q tuned version for SMOOTH_GBLM. This function
 % optimizes Q by seraching over a grid of Q. the default lower bound of Q
@@ -39,9 +39,6 @@ iter = 30;
 fit.toleranceValue= 1e-6;
 fit.F = eye(2);
 
-% flatten parameter
-alpha = 0.2;
-
 if (~isempty(varargin))
     c = 1 ;
     while c <= length(varargin)
@@ -78,8 +75,6 @@ if (~isempty(varargin))
                 QUB = varargin{c+1};
             case {'llhdPlot'}
                 llhdPlot = varargin{c+1};
-            case {'alpha'}
-                alpha = varargin{c+1};
         end % switch
         c = c + 2;
     end % for
@@ -100,7 +95,7 @@ for q=1:nq
     [fit, ~] = loopCore(data, fit);
     qbllhd_pred(q)=fit.llhd_pred;
 end
-[qb_indx, qbllhd_pred_flat] = maxPlateauIndx(qbllhd_pred, alpha);
+[~, qb_indx] = max(qbllhd_pred);
 
 fprintf('\n')
 qwllhd_pred = ones(1, nq)*NaN;
@@ -112,8 +107,7 @@ for q=1:nq
     [fit,~] = loopCore(data, fit);
     qwllhd_pred(q)=fit.llhd_pred;
 end
-
-[qw_indx, qwllhd_pred_flat] = maxPlateauIndx(qwllhd_pred, alpha);
+[~, qw_indx] = max(qwllhd_pred);
 
 fprintf('\n')
 Qopt = [Qvec(qb_indx) 0; 0 Qvec(qw_indx)];
@@ -124,31 +118,16 @@ fit.iter = iter;
 
 if llhdPlot
     subplot(1,2,1)
-    semilogx(Qvec,qbllhd_pred, 'b',...
-        Qvec,qbllhd_pred_flat, 'r')
+    semilogx(Qvec,qbllhd_pred, 'b')
     ylabel('log likelihood')
     xlabel('Q')
     title('beta0')
     subplot(1,2,2)
-    semilogx(Qvec,qwllhd_pred, 'b',...
-        Qvec,qwllhd_pred_flat, 'r')
+    semilogx(Qvec,qwllhd_pred, 'b')
     xlabel('Q')
     title('wtlong')
 end
 
 
-
-end
-
-
-function [maxMaxIdx, llhdFlat] = maxPlateauIndx(llhd, alpha)
-
-llhdFlat = llhd;
-diffLlhd = diff(llhd);
-flatIdx = find(abs(diffLlhd/ mean(abs(diffLlhd))) < alpha);
-for k = flatIdx
-    llhdFlat(k+1) = llhdFlat(k);
-end
-maxMaxIdx = find(llhdFlat == max(llhdFlat), 1, 'last' );
 
 end
