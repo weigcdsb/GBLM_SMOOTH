@@ -21,9 +21,9 @@ sim.stp_tau= 1;
 sim.stp_B = [0 0 1 3 1]'*(-0.05);
 sim.hist_tau = .01;
 sim.hist_beta = -2;
-sim.wt_long = ones(1, sim.T/sim.dt)'*3 + ...
-    detrend(cumsum(randn(sim.vecN,1)*sqrt(Q_true(1, 1))));
 sim.beta0 = ones(1, sim.T/sim.dt)'*3 + ...
+    detrend(cumsum(randn(sim.vecN,1)*sqrt(Q_true(1, 1))));
+sim.wt_long = ones(1, sim.T/sim.dt)'*3 + ...
     detrend(cumsum(randn(sim.vecN,1)*sqrt(Q_true(2, 2))));
 
 data.dt = sim.dt;

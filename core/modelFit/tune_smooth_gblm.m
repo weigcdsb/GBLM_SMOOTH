@@ -6,6 +6,7 @@ function [fit, fit_trace, Qvec,...
 % is 1e-9 and the default upper bound of Q is 1e-3. The default number of
 % searched Q points is 10. To turn on the plot, set llhdPlot = true.
 
+doFit = true;
 nq = 10;
 QLB = 1e-9;
 QUB = 1e-3;
@@ -75,6 +76,8 @@ if (~isempty(varargin))
                 QUB = varargin{c+1};
             case {'llhdPlot'}
                 llhdPlot = varargin{c+1};
+            case {'doFit'}
+                doFit = varargin{c+1};
         end % switch
         c = c + 2;
     end % for
@@ -111,10 +114,14 @@ end
 
 fprintf('\n')
 Qopt = [Qvec(qb_indx) 0; 0 Qvec(qw_indx)];
-fit.Q = Qopt;
-fit.doFiltOnly = false;
-fit.iter = iter;
-[fit,fit_trace] = loopCore(data, fit);
+fit_trace = fit;
+if doFit
+    fit.Q = Qopt;
+    fit.doFiltOnly = false;
+    fit.iter = iter;
+    [fit,fit_trace] = loopCore(data, fit);
+end
+
 
 if llhdPlot
     subplot(1,2,1)
