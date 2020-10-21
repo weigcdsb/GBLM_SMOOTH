@@ -59,6 +59,7 @@ for k = 1:fit.iter
     fit.llhd = sum(-lam + log((lam+(lam==0))).*(data.post_spk_vec'));
     
     fprintf('%.02f...',-2*fit.llhd);
+    if isfield(fit,'noSTP') && fit.noSTP;fprintf('\n'); break; end
     fit_trace(c)=fit;
     c=c+1;
     

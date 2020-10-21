@@ -5,7 +5,7 @@ rng(sim.seed);
 % Presynaptic Spike Times
 if length(sim.pPreSpike)==1 % homogeneous Poisson
     mean_isi = data.dt/sim.pPreSpike;
-    data.pre_spk_times = cumsum(exprnd(mean_isi,sim.T/mean_isi*5,1));
+    data.pre_spk_times = cumsum(exprnd(mean_isi,round(sim.T/mean_isi*5),1));
     data.pre_spk_times = data.pre_spk_times(data.pre_spk_times<sim.T);
 else % inhomogeneous Poisson
     data.pre_spk_times = find(poissrnd(sim.pPreSpike)>0);
@@ -37,7 +37,8 @@ wt_short = 1 + sim.stp_X*sim.stp_B;
 % Generate Post-Synaptic Spikes
 kern_hist = exp(-x0/sim.hist_tau);
 hist_filt = [mean(sim.beta0) kern_hist*sim.hist_beta];
-data.post_spk_times = sim_glm(hist_filt,data.dt,sim.T,1,sim.beta0-mean(sim.beta0)+sim.wt_long.*wt_short.*Xc);
+data.post_spk_times = sim_glm(hist_filt,data.dt,sim.T,1,sim.beta0-mean(sim.beta0)+sim.wt_long.*wt_short.*Xc,...
+    'verbose', false);
 data.post_spk_vec = zeros(1,sim.vecN);
 data.post_spk_vec(round(data.post_spk_times/data.dt))=1;
 

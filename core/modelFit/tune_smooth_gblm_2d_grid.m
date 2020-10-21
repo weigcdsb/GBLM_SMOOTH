@@ -1,6 +1,5 @@
-function [fit, fit_trace, Qvec,...
-    qbllhd_pred, qwllhd_pred, Qopt] =...
-    tune_smooth_gblm(preSpk, postSpk, varargin)
+function [fit, fit_trace, Qvec, llhdmesh, Qopt] =...
+    tune_smooth_gblm_2d_grid(preSpk, postSpk, varargin)
 % TUNE_SMOOTH_GBLM is a Q tuned version for SMOOTH_GBLM. This function
 % optimizes Q by seraching over a grid of Q. the default lower bound of Q
 % is 1e-9 and the default upper bound of Q is 1e-3. The default number of
@@ -88,51 +87,41 @@ fit = synConEst(data,fit);
 
 %% Q tune
 Qvec = logspace(log10(QLB), log10(QUB), nq);
+fit.doFiltOnly=true;
+fit.noSTP = true;
+fit.iter = 1;
+llhdmesh = zeros(nq, nq);
 
-qbllhd_pred = ones(1, nq)*NaN;
-for q=1:nq
-    fprintf('Qbeta0 %02i/%02i...', q, nq)
-    fit.Q = [Qvec(q) 0; 0 0];
-    fit.doFiltOnly=true;
-    fit.iter = 1;
-    [fit, ~] = loopCore(data, fit);
-    qbllhd_pred(q)=fit.llhd_pred;
+for j = 1:nq
+    for k = 1:nq
+        fprintf('Qbeta0 %02i/%02i... Qwtlong %02i/%02i...', j, nq, k, nq)
+        fit.Q = diag([Qvec(j) Qvec(k)]);
+        [~, fit, ~] = evalc('loopCore(data, fit)');
+        fprintf('llhd %.02f... \n', fit.llhd_pred)
+        llhdmesh(j, k) = fit.llhd_pred;
+    end
 end
-[~, qb_indx] = max(qbllhd_pred);
 
-fprintf('\n')
-qwllhd_pred = ones(1, nq)*NaN;
-for q=1:nq
-    fprintf('Qwtlong %02i/%02i...', q, nq)
-    fit.Q = [Qvec(qb_indx) 0; 0 Qvec(q)];
-    fit.doFiltOnly=true;
-    fit.iter = 1;
-    [fit,~] = loopCore(data, fit);
-    qwllhd_pred(q)=fit.llhd_pred;
-end
-[~, qw_indx] = max(qwllhd_pred);
-
-fprintf('\n')
+[qb_indx, qw_indx] = find(llhdmesh == max(max(llhdmesh)));
 Qopt = [Qvec(qb_indx) 0; 0 Qvec(qw_indx)];
 fit_trace = fit;
 if doFit
     fit.Q = Qopt;
     fit.doFiltOnly = false;
+    fit.noSTP = false;
     fit.iter = iter;
     [fit,fit_trace] = loopCore(data, fit);
 end
 
 
 if llhdPlot
-    subplot(1,2,1)
-    semilogx(Qvec,qbllhd_pred, 'b')
-    ylabel('log likelihood')
-    xlabel('Q')
-    title('beta0')
-    subplot(1,2,2)
-    semilogx(Qvec,qwllhd_pred, 'b')
-    xlabel('Q')
-    title('wtlong')
+    f = figure; set(f,'color','w');
+    hold on;
+    xlabel('Q_{wtL}'); ylabel('Q_{beta0}');
+    % colormap(gray(256));
+    colorbar;
+    imagesc(Qvec,Qvec,llhdmesh);
+    hold off
 end
 
 

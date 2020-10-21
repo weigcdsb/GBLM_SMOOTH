@@ -20,9 +20,10 @@ for n = 1:nQ
             fprintf('k= %i...', k)
             fprintf('\n')
             
+%             tic
             Q_true = diag([Q_true_seq(n) Q_true_seq(m)]);
             sim.seed = seed_seq(k);
-            sim.T = 20*60;
+            sim.T = 10*60;
             sim.dt = 1e-3;
             sim.vecN = round(sim.T/sim.dt);
             sim.pPreSpike = 5*sim.dt;
@@ -44,15 +45,20 @@ for n = 1:nQ
             data.dt = sim.dt;
             [data,sim] = sim_model(data,sim);
             
-            % Q tune
-            [~, ~, ~, ~, ~, Qopt] = ...
-                tune_smooth_gblm(data.pre_spk_vec, data.post_spk_vec,...
-                'nq', 10,'hist_tau', sim.hist_tau,...
-                'hist_beta', sim.hist_beta, 'doFit', false);
+%             Q tune
+%                         [~, ~, ~, ~, ~, Qopt] = ...
+%                             tune_smooth_gblm_1d_golden(data.pre_spk_vec, data.post_spk_vec,...
+%                             'nq', 10,'hist_tau', sim.hist_tau,...
+%                             'hist_beta', sim.hist_beta, 'doFit', false);
             
-            QbEst(n, m, k) = Qopt(1, 1);
-            QwEst(n, m, k) = Qopt(2, 2);
+            [~, ~, Qopt] = ...
+                tune_smooth_gblm_2d_grad(data.pre_spk_vec, data.post_spk_vec,...
+                'iter',15, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta,...
+                'doFit', false);
             
+            QbEst(n, m, k) = Qopt(1);
+            QwEst(n, m, k) = Qopt(2);
+%             toc
         end
     end
 end
@@ -89,7 +95,7 @@ saveas(baseQ, 'A1_baseQ.png')
 %%
 
 for i = 1:nSeed
-   QwEst(:, :, i) =  QwEst(:, :, i)';
+    QwEst(:, :, i) =  QwEst(:, :, i)';
 end
 
 LCol = [0.7490, 0.5608, 0.8902]; % purple
