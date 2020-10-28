@@ -1,12 +1,12 @@
-% addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/helper'));
-% addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
-addpath(genpath('D:\GitHub\GBLM_SMOOTH\helper'));
-addpath(genpath('D:\GitHub\GBLM_SMOOTH\core'));
+addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/helper'));
+addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
+% addpath(genpath('D:\GitHub\GBLM_SMOOTH\helper'));
+% addpath(genpath('D:\GitHub\GBLM_SMOOTH\core'));
 
 
 %%
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\Q\2d';
-plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\Q\2d';
+plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\Q\2d';
+% plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\Q\2d';
 cd(plotFolder)
 
 %% llhd plot
@@ -20,6 +20,8 @@ colorbar;
 imagesc(log10(Qvec), log10(Qvec), llhdmesh);
 xlim([min(log10(Qvec))-.5, max(log10(Qvec))+.5]);
 ylim([min(log10(Qvec))-.5, max(log10(Qvec))+.5]);
+yline(log10(Q_true(1, 1)), 'r--', 'LineWidth', 2);
+xline(log10(Q_true(2, 2)), 'r--', 'LineWidth', 2);
 
 plot(log10(Qopt_grad(2)), log10(Qopt_grad(1)), 'o', 'Color', 'b',...
     'LineWidth', 2, 'markerfacecolor', 'b', 'MarkerSize',5)
@@ -87,6 +89,66 @@ modPlotLoc(sim, fitMLE, '9_mod_mle')
 modPlotLoc(sim, fitSmall, '10_mod_small')
 modPlotLoc(sim, fitLarge, '11_mod_large')
 
+%% log-likelihood plot
+llhd_ltp = figure;
+plot(log10(Qvec), llhd_mle_QLTP, 'Color', 'r', 'LineWidth', 2)
+xline(log10(Q_true(2, 2)), 'r--', 'LineWidth', 2);
+hold on
+plot(log10(Qvec), llhdmesh(4, :), 'Color', 'b', 'LineWidth', 2)
+plot(log10(Qvec), llhdmesh(18, :), 'Color', 'g', 'LineWidth', 2)
+hold off
+set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
+box off
+
+set(llhd_ltp,'PaperUnits','inches','PaperPosition',[0 0 6 4])
+saveas(llhd_ltp, 'B1_llhd_ltp.svg')
+saveas(llhd_ltp, 'B1_llhd_ltp.png')
+
+llhd_baseline = figure;
+plot(log10(Qvec), llhd_mle_Qbase, 'Color', 'r', 'LineWidth', 2)
+xline(log10(Q_true(1, 1)), 'r--', 'LineWidth', 2);
+hold on
+plot(log10(Qvec), llhdmesh(:, 4), 'Color', 'b', 'LineWidth', 2)
+plot(log10(Qvec), llhdmesh(:, 18), 'Color', 'g', 'LineWidth', 2)
+hold off
+set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
+box off
+
+set(llhd_baseline,'PaperUnits','inches','PaperPosition',[0 0 6 4])
+saveas(llhd_baseline, 'B2_llhd_baseline.svg')
+saveas(llhd_baseline, 'B2_llhd_baseline.png')
+
+%% denote 1d gradient descent results
+
+llhdPlot_heat = figure; 
+set(llhdPlot_heat,'color','w');
+hold on
+xlabel('log_{10}(Q_{LTP})'); ylabel('log_{10}(Q_{baseline})');
+colormap(gray(256));
+colorbar;
+imagesc(log10(Qvec), log10(Qvec), llhdmesh);
+xlim([min(log10(Qvec))-.5, max(log10(Qvec))+.5]);
+ylim([min(log10(Qvec))-.5, max(log10(Qvec))+.5]);
+yline(log10(Q_true(1, 1)), 'r--', 'LineWidth', 2);
+xline(log10(Q_true(2, 2)), 'r--', 'LineWidth', 2);
+
+plot(log10(Qopt_grad(2)), log10(Qopt_grad(1)), 'o', 'Color', 'b',...
+    'LineWidth', 2, 'markerfacecolor', 'b', 'MarkerSize',6)
+plot(log10(Qvec(4)), log10(Qvec(4)), 'o', 'Color', 'b',...
+    'LineWidth', 2, 'markerfacecolor', 'b', 'MarkerSize',6)
+plot(log10(Qvec(18)), log10(Qvec(18)), 'o', 'Color', 'b',...
+    'LineWidth', 2, 'markerfacecolor', 'b', 'MarkerSize',6)
+plot(log10(Q_true(2, 2)), log10(Q_true(1, 1)), '^', 'Color', 'r',...
+    'LineWidth', 2, 'markerfacecolor', 'r', 'MarkerSize',6)
+plot(log10(Qopt_grad_1d(2, 2)), log10(Qopt_grad_1d(1, 1)), 'v', 'Color', 'g',...
+    'LineWidth', 2, 'markerfacecolor', 'g', 'MarkerSize',6)
+hold off
+set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
+box off
+
+set(llhdPlot_heat,'PaperUnits','inches','PaperPosition',[0 0 7 6])
+saveas(llhdPlot_heat, 'C1_llhdPlot_heat_supp.svg')
+saveas(llhdPlot_heat, 'C1_llhdPlot_heat_supp.png')
 
 %%
 function basePlot(sim, fit, fileName)

@@ -40,7 +40,7 @@ tic
 [~, ~, Qopt_grad] = ...
     tune_smooth_gblm_2d_grad(data.pre_spk_vec, data.post_spk_vec,...
     'iter',15, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta,...
-    'doFit', false);
+    'doFit', false, 'synParams', fit.synParams);
 t_grad = toc;
 
 
@@ -50,6 +50,23 @@ t_grad = toc;
 %     'iter',15, 'hist_tau', sim.hist_tau, 'hist_beta', sim.hist_beta,...
 %     'doFit', false, 'QIter', 2*1e4);
 % t_simplex = toc;
+
+data.vecN = length(data.pre_spk_vec);
+nQ = length(Qvec);
+llhd_mle_QLTP = zeros(1, nQ);
+llhd_mle_Qbase = zeros(1, nQ);
+
+for j = 1:nQ
+    
+    fit.Q = diag([Qopt_grad(1) Qvec(j)]);
+    [~, fit, ~] = evalc('loopCore(data, fit)');
+    llhd_mle_QLTP(j) = fit.llhd_pred;
+    
+    fit.Q = diag([Qvec(j) Qopt_grad(2)]);
+    [~, fit, ~] = evalc('loopCore(data, fit)');
+    llhd_mle_Qbase(j) = fit.llhd_pred;
+
+end
 
 save('QoptDemo.mat')
 
