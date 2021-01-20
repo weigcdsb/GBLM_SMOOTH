@@ -1,5 +1,5 @@
-addpath(genpath('C:/Users/gaw19004/Desktop/ganchaoResearch/GBLM_SMOOTH-master/helper'));
-addpath(genpath('C:/Users/gaw19004/Desktop/ganchaoResearch/GBLM_SMOOTH-master/core'));
+addpath(genpath('C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\helper'));
+addpath(genpath('C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\core'));
 
 %% set up true parameters
 clc;clear all;close all;
