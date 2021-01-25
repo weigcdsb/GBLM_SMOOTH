@@ -1,19 +1,20 @@
-addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/helper'));
-addpath(genpath('C:/Users/gaw19004/Documents/GitHub/GBLM_SMOOTH/core'));
+
+addpath(genpath('D:/GitHub/GBLM_SMOOTH/helper'));
+addpath(genpath('D:/GitHub/GBLM_SMOOTH/core'));
 
 %%
 clc;clear all;close all;
 % load('E:\casedDemoResults_supp_0801\1_facilitation_conJump.mat');
-% load('E:\casedDemoResults_supp_0801\2_depression_conJump.mat');
-load('E:\casedDemoResults_supp_0801\3_noPlasticity_conJump.mat');
-% load('E:\casedDemoResults_supp_0801\4_depression_conLinear.mat');
-% load('E:\casedDemoResults_supp_0801\5_depression_conSin.mat');
+load('F:\casedDemoResults_supp_0801\2_depression_conJump.mat');
+% load('F:\casedDemoResults_supp_0801\3_noPlasticity_conJump.mat');
+% load('F:\casedDemoResults_supp_0801\4_depression_conLinear.mat');
+% load('F:\casedDemoResults_supp_0801\5_depression_conSin.mat');
 
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\1_facilitation_conJump';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\2_depression_conJump';
-plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\3_noPlasticity_conJump';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\4_depression_conLinear';
-% plotFolder = 'C:\Users\gaw19004\Documents\GitHub\GBLM_SMOOTH\plot\fig2_plot\5_depression_conSin';
+% plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\fig2_plot\1_facilitation_conJump';
+plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\fig2_plot\2_depression_conJump';
+% plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\fig2_plot\3_noPlasticity_conJump';
+% plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\fig2_plot\4_depression_conLinear';
+% plotFolder = 'D:\GitHub\GBLM_SMOOTH\plot\fig2_plot\5_depression_conSin';
 
 cd(plotFolder)
 
@@ -24,6 +25,28 @@ data.vecN = length(data.pre_spk_vec);
 
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
     fit.hist*fit.hist_beta)*data.dt;
+
+%% baseline
+baseLine = figure;
+idx = 1:size(fit.beta0);
+hold on
+plot(idx, fit.beta0, 'r', 'LineWidth', 3)
+plot(idx, sim.beta0, 'k', 'LineWidth', 3)
+plot(idx, fit.beta0 + sqrt(squeeze(fit.W(1, 1, :))), 'r:', 'LineWidth', 2)
+plot(idx, fit.beta0 - sqrt(squeeze(fit.W(1, 1, :))), 'r:', 'LineWidth', 2)
+ylim([min(sim.beta0)-1 max(sim.beta0)+1])
+xlim([0 sim.T/sim.dt])
+xticks([0 2 4 6 8 10 12]*1e5)
+xticklabels({'0','200','400','600','800','1000','1200'})
+hold off
+set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
+box off
+
+set(baseLine,'PaperUnits','inches','PaperPosition',[0 0 5 3])
+saveas(baseLine, '0_baseLine.svg')
+saveas(baseLine, '0_baseLine.png')
+
+
 
 %% LTP
 ltp = figure;

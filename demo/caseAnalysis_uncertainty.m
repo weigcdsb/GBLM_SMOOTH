@@ -7,14 +7,19 @@ data.vecN = length(data.pre_spk_vec);
 
 lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc +...
     fit.hist*fit.hist_beta)*data.dt;
-
+lam2 = exp(fit.beta0 + fit.hist*fit.hist_beta)*data.dt;
+lam3 = exp(fit.beta0)*data.dt;
 
 %% firing rate
 firRate = figure;
-hold on
+
 plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,data.pre_spk_vec)/2, 'b', 'LineWidth', 1.5);
 plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,data.post_spk_vec)/2, 'k', 'LineWidth', 1.5);
+hold on
 plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,lam)/2, 'r', 'LineWidth', 1.5);
+plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,lam2)/2, 'b', 'LineWidth', 1.5);
+plot(linspace(0,sim.T,sim.vecN), filter(ones(2000,1),1,lam3)/2, 'g', 'LineWidth', 1.5);
+
 hold off
 ylim([0 50])
 xlim([0 sim.T])
