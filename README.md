@@ -1,45 +1,23 @@
-# GBLM_SMOOTH
-GBLM-smoothing model for estimations of LTP and STP
+# GBLM-SMOOTH  
+GBLM-SMOOTH is a model, implemented in MATLAB, that can track long-term and short-term synaptic plasticity simultaneously. This repository contains **four** folders  
+  
+## 1. "core"  
+**Three** sub-folders are included:  
+  
+**(i) "diagnose"**: tools to evaluate fitting  
+**(ii) "modelFit"**: implementation of the model. The basic model (without tuning **_Q_** in adaptive smoothing) starts from **smooth_gblm.m**. The **_Q_**-tuned versions are generally called **tune_smooth_gblm_xd_xxxx.m**. "xd"" means whether it is 2D optimization or 1D approximation. The last four letters denote optimization methods, i.e. "_grad" for gradient descent and "_grid" for grid search. 
+**(iii) "simulation"**: code for generating neural spikes.
 
-## convergence
-check convergence when considering 1) random start points and 2) order of estimations
+## 2. "demo"
+This folder provides code for generating all figures in the paper. Generally, "_caseDemo" denotes code for simulations and model fitting, while "_caseAnalysis" denotes code for plotting.
 
-## core
-This includes 3 subfolders:
+## 3. "helper"
+The helper functions for simulations and model fitting.
 
- 1) diagnose: functions to help plot
+## 4. "plot"
+This folder contains all the plots used in the paper.
 
- 2) modelFit: 2 main functions are called smooth_gblm.m and tune_smooth_gblm.m. tune_smooth_gblm is the Q-tuned version for smooth_gblm. 
 
- 3) simulation: functions to help simulations, such as data generation, beta0 matching and wt_long matching.
-
-## demo
-Show some examples of model fitting
-
-## draft
-drafts for paper
-
-## fireRate
-Investigate influence of pre- and post-synaptic firing rate
-
-## helper
-
-## interaction
-Temporarily not included in the paper. Maybe we can investigate interactions by fixing 1 (true, under-estimate, over-estimate) of these 3, and then see the performance of the other 2?
-
-## LTPUncertainty
-See the influence of pre-synaptic firing rate on variance of wt_long
-
-## Qchoose
-A demo to show function tune_smooth_gblm
-
-## refereces
-
-## STP_type
-Investigate influence of different STP (depression vs. facilitation)
-
-## synType
-Investigate influence of different synapses (excitatory vs. inhibitory)
 
 
 
