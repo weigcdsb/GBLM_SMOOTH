@@ -1,10 +1,10 @@
 # GBLM-SMOOTH  
-GBLM-SMOOTH is a model, implemented in MATLAB, that can track long-term and short-term synaptic plasticity simultaneously. This repository contains **four** folders  
+GBLM-SMOOTH is a model, implemented in MATLAB, that can track long-term and short-term synaptic plasticity simultaneously. This repository contains **four** folders.  
   
 ## 1. "core"  
 **Three** sub-folders are included:  
   
-**(i) "diagnose"**: tools to evaluate fitting  
+**(i) "diagnose"**: tools to evaluate fitting.  
 **(ii) "modelFit"**: implementation of the model. The basic model (without tuning **_Q_** in adaptive smoothing) starts from **smooth_gblm.m**. The **_Q_**-tuned versions are generally called **tune_smooth_gblm_xd_xxxx.m**. "xd"" means whether it is 2D optimization or 1D approximation. The last four letters denote optimization methods, i.e. "_grad" for gradient descent and "_grid" for grid search.   
 **(iii) "simulation"**: code for generating neural spikes.
 
