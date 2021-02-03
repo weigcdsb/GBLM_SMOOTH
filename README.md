@@ -12,7 +12,7 @@ GBLM-SMOOTH is a model, implemented in MATLAB, that can track long-term and shor
 This folder provides code for generating all figures in the paper. Generally, "_caseDemo" denotes code for simulations and model fitting, while "_caseAnalysis" denotes code for plotting.
 
 ## 3. "helper"
-The helper functions for simulations and model fitting.
+It contains helper functions for simulations and model fitting.
 
 ## 4. "plot"
 This folder contains all the plots used in the paper.
