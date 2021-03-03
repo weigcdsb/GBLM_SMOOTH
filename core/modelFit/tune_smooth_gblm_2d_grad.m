@@ -99,7 +99,6 @@ Qopt = fmincon(f,Q0,[],[],[],[],QLB,QUB, [], options);
 fit.Q = diag(Qopt);
 fit_trace = fit;
 if doFit
-    fit.Q = Qopt;
     fit.doFiltOnly = false;
     fit.noSTP = false;
     fit.iter = iter;

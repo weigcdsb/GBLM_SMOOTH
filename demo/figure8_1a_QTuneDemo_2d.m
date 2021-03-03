@@ -1,5 +1,7 @@
 addpath(genpath('~/GitHub/GBLM_SMOOTH/helper'));
 addpath(genpath('~/GitHub/GBLM_SMOOTH/core'));
+addpath(genpath('D:\GitHub\GBLM_SMOOTH'))
+
 
 %%
 clc; clear all; close all;

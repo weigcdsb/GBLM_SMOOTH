@@ -1,5 +1,5 @@
 function [fit, fit_trace, Qopt] =...
-    tune_smooth_gblm_1d_grad(preSpk, postSpk, varargin)
+    tune_smooth_gblm_1d_grad2(preSpk, postSpk, varargin)
 
 doFit = true;
 QLB = 1e-9;
@@ -114,7 +114,7 @@ if doFit
     fit.doFiltOnly = false;
     fit.noSTP = false;
     fit.iter = iter;
-    [fit,fit_trace] = loopCore(data, fit);
+    [fit,fit_trace] = loopCore2(data, fit);
 end
 
 
@@ -132,7 +132,7 @@ end
 fit.doFiltOnly=true;
 fit.noSTP = true;
 fit.iter = 1;
-[fit, ~] = loopCore(data, fit);
+[fit, ~] = loopCore2(data, fit);
 neg_llhd_pred = -fit.llhd_pred;
 
 end

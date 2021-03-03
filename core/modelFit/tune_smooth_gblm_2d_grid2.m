@@ -1,15 +1,15 @@
-function [fit, fit_trace, Qopt] =...
-    tune_smooth_gblm_1d_grad(preSpk, postSpk, varargin)
+function [fit, fit_trace, Qvec, llhdmesh, Qopt] =...
+    tune_smooth_gblm_2d_grid2(preSpk, postSpk, varargin)
+% TUNE_SMOOTH_GBLM is a Q tuned version for SMOOTH_GBLM. This function
+% optimizes Q by seraching over a grid of Q. the default lower bound of Q
+% is 1e-9 and the default upper bound of Q is 1e-3. The default number of
+% searched Q points is 10. To turn on the plot, set llhdPlot = true.
 
 doFit = true;
+nq = 10;
 QLB = 1e-9;
-QUB = 1e-4;
-QIter = 25;
-Q0 = QUB;
-DiffMinChange = QLB;
-DiffMaxChange = QUB*0.1;
-MaxFunEvals = 100;
-MaxIter = 25;
+QUB = 1e-3;
+llhdPlot = false;
 
 % data set up
 data.dt = 0.001;
@@ -66,73 +66,64 @@ if (~isempty(varargin))
             case {'toleranceValue'}
                 fit.toleranceValue = varargin{c+1};
             case {'F'}
-            case {'Q0'}
-                Q0 = varargin{c+1};
                 fit.F = varargin{c+1};
+            case {'nq'}
+                nq = varargin{c+1};
             case {'QLB'}
                 QLB = varargin{c+1};
             case {'QUB'}
                 QUB = varargin{c+1};
-            case {'DiffMinChange'}
-                DiffMinChange = varargin{c+1};
-            case {'DiffMaxChange'}
-                DiffMaxChange = varargin{c+1};
-            case {'MaxFunEvals'}
-                MaxFunEvals = varargin{c+1};
-            case {'MaxIter'}
-                MaxIter = varargin{c+1};
+            case {'llhdPlot'}
+                llhdPlot = varargin{c+1};
             case {'doFit'}
                 doFit = varargin{c+1};
-            case {'synParams'}
-                fit.synParams = varargin{c+1};
         end % switch
         c = c + 2;
     end % for
 end % if
 
-if exist('tolX','var') == 0; tolX = QLB*1e-1;end
-
 %% Synaptic Connection
 fit = synConEst(data,fit);
 
-disp(fit.synParams.syn_params(1))
-disp(fit.synParams.syn_params(2))
-
-options = optimset('DiffMinChange',DiffMinChange,'DiffMaxChange',DiffMaxChange,...
-    'MaxFunEvals', MaxFunEvals, 'MaxIter', MaxIter);
-f = @(Q) helper_1d(Q, fit, data, 0, 1);
-QbEst = fmincon(f,Q0,[],[],[],[],QLB,QUB, [], options);
-
-f = @(Q) helper_1d(Q, fit, data, QbEst, 2);
-QwEst = fmincon(f,Q0,[],[],[],[],QLB,QUB, [], options);
-
-Qopt = [QbEst 0; 0 QwEst];
-
-fit.Q = Qopt;
-fit_trace = fit;
-if doFit
-    fit.doFiltOnly = false;
-    fit.noSTP = false;
-    fit.iter = iter;
-    [fit,fit_trace] = loopCore(data, fit);
-end
-
-
-end
-
-
-function neg_llhd_pred = helper_1d(Q, fit, data, Qother, idx)
-
-if idx == 1
-    fit.Q = diag([Q, Qother]);
-elseif idx == 2
-    fit.Q = diag([Qother, Q]);
-end
-
+%% Q tune
+Qvec = logspace(log10(QLB), log10(QUB), nq);
 fit.doFiltOnly=true;
 fit.noSTP = true;
 fit.iter = 1;
-[fit, ~] = loopCore(data, fit);
-neg_llhd_pred = -fit.llhd_pred;
+llhdmesh = zeros(nq, nq);
+
+for j = 1:nq
+    for k = 1:nq
+        fprintf('Qbeta0 %02i/%02i... Qwtlong %02i/%02i...', j, nq, k, nq)
+        fit.Q = diag([Qvec(j) Qvec(k)]);
+        [~, fit, ~] = evalc('loopCore2(data, fit)');
+        fprintf('llhd %.02f... \n', fit.llhd_pred)
+        llhdmesh(j, k) = fit.llhd_pred;
+    end
+end
+
+[qb_indx, qw_indx] = find(llhdmesh == max(max(llhdmesh)));
+Qopt = [Qvec(qb_indx) 0; 0 Qvec(qw_indx)];
+fit_trace = fit;
+if doFit
+    fit.Q = Qopt;
+    fit.doFiltOnly = false;
+    fit.noSTP = false;
+    fit.iter = iter;
+    [fit,fit_trace] = loopCore2(data, fit);
+end
+
+
+if llhdPlot
+    f = figure; set(f,'color','w');
+    hold on;
+    xlabel('Q_{wtL}'); ylabel('Q_{beta0}');
+    % colormap(gray(256));
+    colorbar;
+    imagesc(Qvec,Qvec,llhdmesh);
+    hold off
+end
+
+
 
 end

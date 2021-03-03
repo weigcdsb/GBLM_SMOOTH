@@ -41,7 +41,7 @@ wt_long_seq = ...
 rng(123);
 seed_seq = randperm(50, 5);
 
-for k = 3
+for k = 1:5
     fprintf('Case %02i...',k)
     
     % simulation set up
