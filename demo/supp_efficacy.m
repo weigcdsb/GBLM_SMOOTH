@@ -1,4 +1,8 @@
 
+Tpre = data.pre_spk_times;
+Tpost = data.post_spk_times;
+
+
 isi = [Inf; diff(Tpre)];
 quantiles = prctile(isi,linspace(0,100,25));
 qx = quantiles(1:end-1)+diff(quantiles)/2;
@@ -17,7 +21,7 @@ for q=1:length(quantiles)-1
     dbase = corr_fast_v3(qspk,Tpost,-.008,-0.004,20);
     d = corr_fast_v3(qspk,Tpost,0.004,.008,20);
     
-    n = zeros(1,data.T/data.dt);
+    n = zeros(1, T/data.dt);
     n(ceil(qspk/data.dt))=1;
     model_efficacy(q) = mean(exp(wt(n>0)));
     
@@ -36,4 +40,3 @@ set(gca,'FontSize',15, 'LineWidth', 1.5,'TickDir','out')
 box off
 hold off
 
-set(effPlot,'PaperUnits','inches','PaperPosition',[0 0 4 3])
