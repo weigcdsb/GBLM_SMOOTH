@@ -11,11 +11,11 @@ sim.seed = 123;
 sim.T = T;
 sim.dt = dt;
 sim.vecN = round(sim.T/sim.dt);
-% sim.pPreSpike = ones(sim.vecN,1)*3*sim.dt;
-% sim.pPreSpike(round(sim.vecN/3):round(sim.vecN*2/3)) = 15*sim.dt;
+sim.pPreSpike = ones(sim.vecN,1)*3*sim.dt;
+sim.pPreSpike(round(sim.vecN/3):round(sim.vecN*2/3)) = 15*sim.dt;
 
-sim.pPreSpike = ones(sim.vecN,1)*5*sim.dt;
-sim.pPreSpike(round(sim.vecN/3):round(sim.vecN*2/3)) = 0*sim.dt;
+% sim.pPreSpike = ones(sim.vecN,1)*5*sim.dt;
+% sim.pPreSpike(round(sim.vecN/3):round(sim.vecN*2/3)) = 0*sim.dt;
 
 sim.alpha_dt = 0.004;
 sim.alpha_tau = 0.001;

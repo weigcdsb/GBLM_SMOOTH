@@ -66,9 +66,9 @@ if (~isempty(varargin))
             case {'toleranceValue'}
                 fit.toleranceValue = varargin{c+1};
             case {'F'}
+                fit.F = varargin{c+1};
             case {'Q0'}
                 Q0 = varargin{c+1};
-                fit.F = varargin{c+1};
             case {'QLB'}
                 QLB = varargin{c+1};
             case {'QUB'}

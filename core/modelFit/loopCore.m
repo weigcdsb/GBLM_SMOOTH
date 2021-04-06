@@ -44,7 +44,7 @@ for k = 1:fit.iter
         fit.llhd_pred = sum(-lam_pred + log((lam_pred+(lam_pred==0))).*(data.post_spk_vec'));
     end
     
-    % if warning, break;
+%     if warning, break;
     [warnmsg, msgid] = lastwarn;
     if strcmp(msgid,'MATLAB:illConditionedMatrix')
         disp(warnmsg);

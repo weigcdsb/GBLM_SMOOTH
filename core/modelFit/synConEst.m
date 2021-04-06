@@ -9,8 +9,9 @@ for m =1:fit.stp_Nq
     s(m,data.pre_spk_vec>0)=[0 Bm_dt(m,:)];
 end
 x0 = linspace(0,1,1/data.dt);
-kern_stp = exp(-x0/fit.stp_tau);
-fit.stp_X = filter(kern_stp,1,s');
+% kern_stp = exp(-x0/fit.stp_tau);
+% fit.stp_X = filter(kern_stp,1,s');
+fit.stp_X = expfilt(s',1/fit.stp_tau*data.dt);
 
 % alpha function
 if (~isfield(fit, 'synParams'))

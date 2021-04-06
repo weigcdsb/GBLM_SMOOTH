@@ -1,12 +1,13 @@
 function [fit, fit_trace, Qopt] =...
-    tune_smooth_gblm_2d_grad2(preSpk, postSpk, varargin)
+    tune_smooth_gblm_1d_grad_mse(preSpk, postSpk, varargin)
 
 doFit = true;
-QLB = [1e-8 1e-8];
-QUB = [1e-3 1e-3];
+QLB = 1e-9;
+QUB = 1e-4;
+QIter = 25;
 Q0 = QUB;
-DiffMinChange = min(QLB);
-DiffMaxChange = max(QUB*0.1);
+DiffMinChange = QLB;
+DiffMaxChange = QUB*0.1;
 MaxFunEvals = 100;
 MaxIter = 25;
 
@@ -68,6 +69,10 @@ if (~isempty(varargin))
                 fit.F = varargin{c+1};
             case {'Q0'}
                 Q0 = varargin{c+1};
+            case {'QLB'}
+                QLB = varargin{c+1};
+            case {'QUB'}
+                QUB = varargin{c+1};
             case {'DiffMinChange'}
                 DiffMinChange = varargin{c+1};
             case {'DiffMaxChange'}
@@ -76,10 +81,6 @@ if (~isempty(varargin))
                 MaxFunEvals = varargin{c+1};
             case {'MaxIter'}
                 MaxIter = varargin{c+1};
-            case {'QLB'}
-                QLB = varargin{c+1};
-            case {'QUB'}
-                QUB = varargin{c+1};
             case {'doFit'}
                 doFit = varargin{c+1};
             case {'synParams'}
@@ -89,46 +90,50 @@ if (~isempty(varargin))
     end % for
 end % if
 
+if exist('tolX','var') == 0; tolX = QLB*1e-1;end
+
 %% Synaptic Connection
 fit = synConEst(data,fit);
 
-% options = optimset('DiffMinChange',DiffMinChange, 'PlotFcns',@optimplotfval);
+disp(fit.synParams.syn_params(1))
+disp(fit.synParams.syn_params(2))
+
 options = optimset('DiffMinChange',DiffMinChange,'DiffMaxChange',DiffMaxChange,...
     'MaxFunEvals', MaxFunEvals, 'MaxIter', MaxIter);
-f = @(Q) helper_2d(Q, fit, data);
-Qopt = fmincon(f,Q0,[],[],[],[],QLB,QUB, [], options);
+f = @(Q) helper_1d(Q, fit, data, 0, 1);
+QbEst = fmincon(f,Q0,[],[],[],[],QLB,QUB, [], options);
 
-fit.Q = diag(Qopt);
+f = @(Q) helper_1d(Q, fit, data, QbEst, 2);
+QwEst = fmincon(f,Q0,[],[],[],[],QLB,QUB, [], options);
+
+Qopt = [QbEst 0; 0 QwEst];
+
+fit.Q = Qopt;
 fit_trace = fit;
 if doFit
     fit.doFiltOnly = false;
     fit.noSTP = false;
     fit.iter = iter;
-    [fit,fit_trace] = loopCore2(data, fit);
+    [fit,fit_trace] = loopCore(data, fit);
 end
 
 
 end
 
 
-function neg_llhd_pred = helper_2d(Q, fit, data)
+function mse = helper_1d(Q, fit, data, Qother, idx)
 
-fit.Q = diag([Q(1) Q(2)]);
+if idx == 1
+    fit.Q = diag([Q, Qother]);
+elseif idx == 2
+    fit.Q = diag([Qother, Q]);
+end
 
-fit.doFiltOnly=true;
+fit.doFiltOnly=false;
 fit.noSTP = true;
 fit.iter = 1;
-% [fit, ~] = loopCore2(data, fit);
-[~, fit, ~] = evalc('loopCore2(data, fit)');
-fprintf('llhd %.02f... \n', fit.llhd_pred);
-neg_llhd_pred = -fit.llhd_pred;
+[fit, ~] = loopCore(data, fit);
+lam = exp(fit.beta0 + fit.wt_long.*fit.wt_short.*fit.Xc + fit.hist*fit.hist_beta)*data.dt;
+mse = mean((data.post_spk_vec' - lam).^2);
 
 end
-
-
-
-
-
-
-
-
